@@ -1,1 +1,2 @@
 psycopg[binary]==3.3.6
+playwright==1.63.0
