@@ -1,0 +1,16 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+output/*
+!output/.gitkeep
+
+# Datos entregados y configuración local que no se publican en Git
+source/
+*.pdf
+.agents/
+skills-lock.json
+
+# Guías locales de trabajo para agentes
+/AGENTS.md
+/docs/agent-guides/

@@ -1,0 +1,9 @@
+source/
+output/
+docs/
+*.pdf
+*.md
+.env
+.venv/
+__pycache__/
+*.pyc

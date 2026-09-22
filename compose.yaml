@@ -1,0 +1,35 @@
+services:
+  app:
+    build: .
+    command: ["sleep", "infinity"]
+    environment:
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_NAME: ${POSTGRES_DB:-food_delivery}
+      DB_USER: ${POSTGRES_USER:-food_delivery}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-local_development_only}
+    volumes:
+      - ./app:/workspace/app:ro
+      - ./tests:/workspace/tests:ro
+      - ./source:/workspace/source:ro
+      - ./output:/workspace/output
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:18.6-alpine3.23
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-food_delivery}
+      POSTGRES_USER: ${POSTGRES_USER:-food_delivery}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local_development_only}
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  postgres_data:
