@@ -17,11 +17,11 @@ Este plan desarrolla el [ADR-0001](ADR-0001-pipeline-local-docker-first.md) y la
 
 **Objetivo:** obtener un restaurante y su menú completo a partir de una URL.
 
-- [x] Implementar `make crawl URL=...` como comando independiente; leer la página con Playwright y priorizar datos estructurados cuando estén disponibles.
-- [x] Extraer datos del restaurante, menús, secciones, platos, descripciones y precios; guardar un JSON con la estructura de `just_eat_venue_example.json`.
-- [x] Tratar respuestas fallidas, campos ausentes y cambios de formato con errores explícitos. El crawl de una URL no debe ser requisito para ejecutar el análisis de los datos ya proporcionados.
+- [ ] Implementar `make crawl URL=...` como comando independiente; leer la página con Playwright y priorizar datos estructurados cuando estén disponibles.
+- [ ] Extraer datos del restaurante, menús, secciones, platos, descripciones y precios; guardar un JSON con la estructura de `just_eat_venue_example.json`.
+- [ ] Tratar respuestas fallidas, campos ausentes y cambios de formato con errores explícitos. El crawl de una URL no debe ser requisito para ejecutar el análisis de los datos ya proporcionados.
 
-- [x] **Validación de cierre:** Tiflis Restaurant produjo dos menús, 26 secciones y 178 apariciones; Edo produjo dos menús, 36 secciones y 292 apariciones, incluidas 28 con selecciones. Sus campos se compararon con el ejemplo. Una URL inexistente y otra con parámetros devolvieron un error identificable y no se exige rastrear las 2.696 URLs.
+- [ ] **Validación de cierre:** una URL de prueba produce un JSON comparable con el ejemplo y una URL fallida deja un error identificable. No se exige rastrear las 2.696 URLs.
 
 ## Bloque 2 — Tarea 2: matching de restaurantes
 
