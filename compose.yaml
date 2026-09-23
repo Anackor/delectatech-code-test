@@ -1,6 +1,8 @@
 services:
   app:
     build: .
+    init: true
+    shm_size: 1gb
     command: ["sleep", "infinity"]
     environment:
       DB_HOST: db
