@@ -30,9 +30,9 @@ Este plan desarrolla el [ADR-0001](ADR-0001-pipeline-local-docker-first.md) y la
 - [x] Leer los JSON grandes de forma incremental y normalizar identificadores, nombre, dirección y coordenadas sin alterar los archivos originales.
 - [x] Seleccionar candidatos por proximidad geográfica o dirección y puntuarlos con similitud de nombre; registrar distancia, puntuación y decisión `matched`, `ambiguous` o `unmatched`.
 - [x] Guardar los resultados en PostgreSQL con claves estables y una carga repetible sin duplicados; exportar una muestra de pares para revisión.
-- [ ] Revisar manualmente una muestra de aciertos, casos dudosos y rechazos antes de fijar los umbrales.
+- [x] Revisar manualmente una muestra de aciertos, casos dudosos y rechazos antes de fijar los umbrales.
 
-- [ ] **Validación de cierre:** pendiente de revisar manualmente una muestra de aciertos, ambiguos y rechazos, y de verificar una segunda ejecución del mismo pack contra PostgreSQL. Este bloque utiliza `just_eat_venues.json`, no depende del crawler.
+- [x] **Validación de cierre:** revisada una muestra de aciertos, ambiguos y rechazos, y verificada una segunda ejecución del mismo pack contra PostgreSQL. Este bloque utiliza `just_eat_venues.json`, no depende del crawler.
 
 ## Bloque 3 — Tarea 3: clasificación de platos
 
