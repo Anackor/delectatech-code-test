@@ -1,6 +1,7 @@
 import unittest
 
 from app.matching.application.match_pack import match_pack
+from app.matching.domain.rules.weighted_score import WeightedScoreRule
 from tests.sources.matching import venue
 
 
@@ -32,3 +33,13 @@ class MatchingTest(unittest.TestCase):
 
         self.assertEqual(decision.status, "matched")
         self.assertEqual(decision.reason, "exact_phone")
+
+    def test_uses_only_available_signals_in_the_average(self):
+        source = venue("je-1", "Pizzeria Roma", latitude=None, longitude=None)
+        candidate = venue("google-1", "Pizzeria Roma", latitude=None, longitude=None, source="google")
+
+        proposal = WeightedScoreRule()._score(source, candidate)
+
+        self.assertEqual(proposal.distance_meters, None)
+        self.assertEqual(proposal.distance_score, None)
+        self.assertEqual(proposal.score, 100.0)
