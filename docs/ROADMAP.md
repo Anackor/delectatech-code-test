@@ -25,14 +25,14 @@ Este plan desarrolla el [ADR-0001](ADR-0001-pipeline-local-docker-first.md) y la
 
 ## Bloque 2 — Tarea 2: matching de restaurantes
 
-**Objetivo:** enlazar los 2.696 locales de Just Eat con candidatos entre los 22.991 locales de Google.
+**Objetivo:** enlazar locales de Just Eat con candidatos entre los 22.991 locales de Google. `make match` procesa por defecto un pack aleatorio de 50 locales para mantener cada ejecución local acotada; el tamaño y la semilla se pueden indicar explícitamente para repetir una muestra.
 
-- [ ] Leer los JSON grandes de forma incremental y normalizar identificadores, nombre, dirección y coordenadas sin alterar los archivos originales.
-- [ ] Seleccionar candidatos por proximidad geográfica o dirección y puntuarlos con similitud de nombre; registrar distancia, puntuación y decisión `matched`, `ambiguous` o `unmatched`.
-- [ ] Guardar los resultados en PostgreSQL con claves estables y una carga repetible sin duplicados; exportar una muestra de pares para revisión.
+- [x] Leer los JSON grandes de forma incremental y normalizar identificadores, nombre, dirección y coordenadas sin alterar los archivos originales.
+- [x] Seleccionar candidatos por proximidad geográfica o dirección y puntuarlos con similitud de nombre; registrar distancia, puntuación y decisión `matched`, `ambiguous` o `unmatched`.
+- [x] Guardar los resultados en PostgreSQL con claves estables y una carga repetible sin duplicados; exportar una muestra de pares para revisión.
 - [ ] Revisar manualmente una muestra de aciertos, casos dudosos y rechazos antes de fijar los umbrales.
 
-- [ ] **Validación de cierre:** `make match` genera resultados consultables, muestra cobertura y casos ambiguos, y una segunda ejecución no duplica filas. Este bloque utiliza `just_eat_venues.json`, no depende del crawler.
+- [ ] **Validación de cierre:** pendiente de revisar manualmente una muestra de aciertos, ambiguos y rechazos, y de verificar una segunda ejecución del mismo pack contra PostgreSQL. Este bloque utiliza `just_eat_venues.json`, no depende del crawler.
 
 ## Bloque 3 — Tarea 3: clasificación de platos
 
