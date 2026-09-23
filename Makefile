@@ -2,6 +2,9 @@
 
 # Pasar una URL como: make crawl URL=https://www.just-eat.es/restaurants-foo/menu
 export CRAWL_URL = $(value URL)
+# Por defecto procesa 50 locales; se puede repetir la muestra con SEED=123.
+export MATCH_PACK_SIZE = $(if $(PACK_SIZE),$(PACK_SIZE),50)
+export MATCH_SEED = $(value SEED)
 
 up:
 	docker compose up --build -d
@@ -20,7 +23,7 @@ crawl:
 	docker compose exec -T -e CRAWL_URL app python -m app.crawler.entrypoint
 
 match:
-	$(error El matching se implementara en el bloque 2)
+	docker compose exec -T -e MATCH_PACK_SIZE -e MATCH_SEED app python -m app.matching.entrypoint
 
 classify:
 	$(error La clasificacion se implementara en el bloque 3)
