@@ -1,5 +1,8 @@
 .PHONY: up down check test crawl match classify images pipeline dashboard
 
+# Pasar una URL como: make crawl URL=https://www.just-eat.es/restaurants-foo/menu
+export CRAWL_URL = $(value URL)
+
 up:
 	docker compose up --build -d
 	docker compose exec -T app python -m app.db
@@ -11,10 +14,10 @@ check:
 	docker compose exec -T app python -m app.db
 
 test:
-	docker compose exec -T app python -m unittest discover -s tests -v
+	docker compose exec -T app python -m unittest discover -s tests -t . -v
 
 crawl:
-	$(error El crawler se implementara en el bloque 1)
+	docker compose exec -T -e CRAWL_URL app python -m app.crawler.entrypoint
 
 match:
 	$(error El matching se implementara en el bloque 2)
