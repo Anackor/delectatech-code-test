@@ -1,0 +1,29 @@
+name: Pull request checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and start services
+        run: docker compose up --build -d
+
+      - name: Run test suite
+        run: make test
+
+      - name: Smoke test crawler use case
+        run: docker compose exec -T app python -m unittest tests.unit.crawler.application.test_crawl_venue -v
+
+      - name: Smoke test matching use case
+        run: docker compose exec -T app python -m unittest tests.unit.matching.test_matching tests.unit.matching.test_pack -v
+
+      - name: Stop services
+        if: always()
+        run: docker compose down
