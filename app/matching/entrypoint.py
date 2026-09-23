@@ -24,7 +24,7 @@ def main() -> int:
         pack, total = select_pack(iter_just_eat(args.just_eat), args.size, args.seed)
         decisions = match_pack(pack, iter_google(args.google))
         save_decisions(pack, decisions)
-        write_sample(args.output, decisions)
+        write_sample(args.output, pack, decisions)
         summary = {status: sum(decision.status == status for decision in decisions)
                    for status in ("matched", "ambiguous", "unmatched")}
         print(json.dumps({"status": "ok", "population": total, "pack_size": len(pack), "seed": args.seed,

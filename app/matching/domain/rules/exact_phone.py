@@ -10,4 +10,4 @@ class ExactPhoneRule:
         if len(matches) != 1:
             return None
         candidate = Candidate(matches[0], distance_meters(source, matches[0]), 100.0, 100.0, 100.0, 100.0)
-        return Decision(source.identifier, "matched", candidate, None, "exact_phone")
+        return Decision(source.identifier, "matched", candidate, None, "exact_phone", (candidate,))

@@ -21,9 +21,9 @@ class Venue:
 class Candidate:
     venue: Venue
     distance_meters: float | None
+    distance_score: float | None
     name_score: float
     address_score: float
-    cuisine_score: float
     score: float
 
 
@@ -34,3 +34,4 @@ class Decision:
     candidate: Candidate | None
     runner_up: Candidate | None
     reason: str
+    proposals: tuple[Candidate, ...] = ()
