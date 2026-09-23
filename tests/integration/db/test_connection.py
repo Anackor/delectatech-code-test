@@ -4,8 +4,8 @@ import unittest
 from app.db import connect
 
 
-class DatabaseTest(unittest.TestCase):
-    def test_app_connects_to_postgres(self):
+class DatabaseConnectionTest(unittest.TestCase):
+    def test_connects_to_configured_database(self):
         with connect() as connection:
             with connection.cursor() as cursor:
                 cursor.execute("SELECT current_database()")
