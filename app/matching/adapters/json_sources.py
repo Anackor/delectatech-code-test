@@ -1,4 +1,6 @@
 from pathlib import Path
+from decimal import Decimal
+import math
 import re
 
 import ijson
@@ -31,7 +33,10 @@ def iter_google(path: Path):
 
 
 def _coordinate(value: object) -> float | None:
-    return float(value) if isinstance(value, (int, float)) and not isinstance(value, bool) else None
+    if not isinstance(value, (int, float, Decimal)) or isinstance(value, bool):
+        return None
+    coordinate = float(value)
+    return coordinate if math.isfinite(coordinate) else None
 
 
 def _google_identifier(raw: dict) -> str:
