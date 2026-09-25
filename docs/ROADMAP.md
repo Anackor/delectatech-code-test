@@ -38,12 +38,12 @@ Este plan desarrolla el [ADR-0001](ADR-0001-pipeline-local-docker-first.md) y la
 
 **Objetivo:** categorizar los platos de los restaurantes enlazados con la taxonomía real entregada.
 
-- [ ] Leer `food_categories.xlsx` como fuente de verdad; validar `uidentifier`, `name`, `parent` y `family`.
-- [ ] Recorrer menús, secciones y platos conservando sus IDs; aplicar reglas y alias sobre nombre, descripción y sección, con tratamiento explícito de categorías genéricas o casos para revisión.
-- [ ] Persistir categoría, regla o evidencia usada y origen del plato en PostgreSQL; exportar una muestra del conjunto unido y categorizado.
-- [ ] Revisar una muestra de clasificaciones y medir la proporción de categorías genéricas o sin resolver.
+- [x] Leer `food_categories.xlsx` como fuente de verdad; validar `uidentifier`, `name`, `parent` y `family`.
+- [x] Recorrer menús, secciones y platos conservando sus IDs; aplicar reglas y alias sobre nombre, descripción y sección, con tratamiento explícito de categorías genéricas o casos para revisión.
+- [x] Persistir categoría, regla o evidencia usada y origen del plato en PostgreSQL; exportar una muestra del conjunto unido y categorizado.
+- [x] Revisar una muestra de clasificaciones y medir la proporción de categorías genéricas o sin resolver: 4.215 platos, 3.857 clasificados, 358 en revisión y 554 clasificaciones genéricas en la muestra procesada.
 
-- [ ] **Validación de cierre:** `make classify` asigna a cada plato procesado una categoría válida o un estado de revisión, mantiene la jerarquía del XLSX y puede repetirse sin duplicados. No se requiere clasificar los restaurantes de Just Eat que no estén enlazados.
+- [x] **Validación de cierre:** `make classify` asigna a cada plato procesado una categoría válida o un estado de revisión, mantiene la jerarquía del XLSX y puede repetirse sin duplicados. No se requiere clasificar los restaurantes de Just Eat que no estén enlazados.
 
 ## Bloque 4 — Tarea 4: imágenes, enfoque técnico y POC
 

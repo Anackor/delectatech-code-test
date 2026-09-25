@@ -48,8 +48,8 @@ docker compose exec -T app python -m app.db
 | Caso de uso | Comando | Estado |
 | --- | --- | --- |
 | Extraer el menú de un restaurante Just Eat | `make crawl URL=...` | Disponible |
-| Enlazar restaurantes Just Eat y Google | `make match` | Bloque 2 pendiente |
-| Clasificar platos | `make classify` | Bloque 3 pendiente |
+| Enlazar restaurantes Just Eat y Google | `make match` | Disponible |
+| Clasificar platos | `make classify` | Disponible |
 | Extraer candidatos desde imágenes | `make images` | Bloque 4 pendiente |
 | Consultar métricas en dashboard | `make dashboard` | Bloque 5 pendiente |
 
@@ -79,8 +79,20 @@ make crawl URL=https://www.just-eat.es/restaurants-tiflis-restaurant-barcelona/m
 
 La URL debe ser una página pública de menú de `www.just-eat.es`, sin parámetros. Un bloqueo, catálogo incompleto o cambio de formato produce un JSON de error en `stderr`, devuelve un código distinto de cero y no reemplaza una salida previa. El crawler requiere acceso de red a Just Eat; los bloques analíticos posteriores trabajan sobre los ficheros entregados y no dependen de esa conexión.
 
+### Clasificación de platos
+
+Ejecute primero `make match` para guardar los restaurantes aceptados y, a continuación:
+
+```sh
+make classify
+```
+
+El comando lee `source/food_categories.xlsx` como fuente de verdad, recorre de forma incremental los menús de los restaurantes enlazados y crea `output/classified-dishes.json`. Cada aparición conserva los IDs de restaurante, menú, sección y plato; incluye la categoría del XLSX con su jerarquía, o el estado `review` cuando no existe evidencia suficiente.
+
+La taxonomía aporta el identificador, nombre, padre, familia y marca de categoría genérica de cada resultado. Las reglas se ejecutan por orden: nombre del plato, sección, cocina declarada por el restaurante junto con una señal específica del plato, descripción y categoría genérica del padre de la taxonomía. Las coincidencias usan alias con límites de palabra para evitar que un ingrediente o una subcadena cambien indebidamente la categoría. Los casos restantes quedan marcados para revisión.
+
 ## Arquitectura y estado
 
-El crawler organiza el caso de uso y sus puertos en `app/crawler/application/`; los adaptadores de Playwright, Just Eat y JSON están en `app/crawler/adapters/`. Las pruebas se dividen entre `tests/unit/`, `tests/integration/` y fuentes reutilizables en `tests/sources/`.
+Cada ejercicio separa reglas, casos de uso y adaptadores. El crawler organiza el caso de uso y sus puertos en `app/crawler/application/`; los adaptadores de Playwright, Just Eat y JSON están en `app/crawler/adapters/`. La clasificación sigue la misma estructura en `app/classification/`: XLSX y JSON son entradas, las reglas son puras y PostgreSQL/JSON son salidas. Las pruebas se dividen entre `tests/unit/`, `tests/integration/` y fuentes reutilizables en `tests/sources/`.
 
 La [decisión de arquitectura](docs/ADR-0001-pipeline-local-docker-first.md) y la [constitución](CONSTITUTION.md) documentan el alcance y las restricciones del ejercicio.
