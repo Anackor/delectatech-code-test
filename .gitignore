@@ -4,6 +4,7 @@ __pycache__/
 *.pyc
 output/*
 !output/.gitkeep
+source/
 
 # Datos entregados y configuración local que no se publican en Git
 source/
