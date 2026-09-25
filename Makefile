@@ -26,7 +26,7 @@ match:
 	docker compose exec -T -e MATCH_PACK_SIZE -e MATCH_SEED app python -m app.matching.entrypoint
 
 classify:
-	$(error La clasificacion se implementara en el bloque 3)
+	docker compose exec -T app python -m app.classification.entrypoint
 
 images:
 	$(error La POC de imagenes se implementara en el bloque 4)
