@@ -11,6 +11,23 @@ git clone https://github.com/Anackor/delectatech-code-test.git
 cd delectatech-code-test
 ```
 
+### Datos de entrada
+
+Los datos entregados no forman parte del repositorio. Copie la carpeta `source/` recibida con la prueba a la raíz del proyecto antes de ejecutar cualquier caso de uso:
+
+```text
+delectatech-code-test/
+├── source/
+│   ├── food_categories.xlsx
+│   ├── google_venues.json
+│   ├── just_eat_venues.json
+│   └── ...
+├── app/
+└── compose.yaml
+```
+
+Los bloques de matching y clasificación requieren `google_venues.json`, `just_eat_venues.json` y `food_categories.xlsx`. El crawler usa `just_eat_venue_example.json` como referencia; las imágenes se utilizan en el bloque 4.
+
 Las credenciales locales predeterminadas están en [`.env.example`](.env.example). Para personalizarlas, copie el archivo antes del primer arranque:
 
 ```powershell
