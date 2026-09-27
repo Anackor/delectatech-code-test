@@ -1,0 +1,34 @@
+[
+  {
+    "cid": "12353399953336620223",
+    "image": "google_images/12353399953336620223/a8c3a678c184ef488d25f9774c20128d.jpg",
+    "status": "inconclusive",
+    "ocrLines": [{"text": "PHILADELPHIA MAK. s", "ocrConfidence": 65.6, "boundingBox": [341, 700, 267, 10]}],
+    "candidates": [],
+    "reviewCandidates": [{"name": "PHILADELPHIA MAK. s", "normalizedName": "philadelphia mak. s", "evidence": "PHILADELPHIA MAK. s", "ocrConfidence": 65.6, "boundingBox": [341, 700, 267, 10]}]
+  },
+  {
+    "cid": "1326306244314649407",
+    "image": "google_images/1326306244314649407/80ada8490cd0992945a911e96597d8e4.jpg",
+    "status": "candidates",
+    "ocrLines": [{"text": "Margarita: salsa de tomate y mozzarella esl co", "ocrConfidence": 74.1, "boundingBox": [46, 167, 776, 39]}],
+    "candidates": [{"name": "Margarita", "normalizedName": "margarita", "evidence": "Margarita: salsa de tomate y mozzarella esl co", "ocrConfidence": 74.1, "boundingBox": [46, 167, 776, 39]}],
+    "reviewCandidates": [{"name": "HAWwAalana", "normalizedName": "hawwaalana", "evidence": "5 HAWwAalana: sunno na bacon, ote queso", "ocrConfidence": 50.7, "boundingBox": [23, 714, 541, 60]}]
+  },
+  {
+    "cid": "9944003937257840785",
+    "image": "google_images/9944003937257840785/3cbb7ebc3d0c8378482b5a96a94e5278.jpg",
+    "status": "candidates",
+    "ocrLines": [{"text": "A-TORTITA AMERICANA", "ocrConfidence": 71.1, "boundingBox": [80, 1234, 1327, 144]}],
+    "candidates": [{"name": "A-TORTITA AMERICANA", "normalizedName": "a-tortita americana", "evidence": "A-TORTITA AMERICANA", "ocrConfidence": 71.1, "boundingBox": [80, 1234, 1327, 144]}],
+    "reviewCandidates": []
+  },
+  {
+    "cid": "13704801545575264378",
+    "image": "google_images/13704801545575264378/594bd6c734095e01b002c63e7e48614b.jpg",
+    "status": "inconclusive",
+    "ocrLines": [],
+    "candidates": [],
+    "reviewCandidates": []
+  }
+]

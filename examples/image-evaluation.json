@@ -1,0 +1,8 @@
+{
+  "image": "google_images/1326306244314649407/80ada8490cd0992945a911e96597d8e4.jpg",
+  "referenceTitles": ["Margarita", "4 quesos Plus", "Classic Plus", "Hawaiiana", "Tex-Mex", "Pesto con Tomates", "Boston Caramelizada", "Honolulu", "Cabra"],
+  "acceptedCorrect": ["Margarita", "4 quesos Plus", "Classic Plus", "Tex-Mex", "Pesto con Tomates", "Boston Caramelizada", "Honolulu", "Cabra"],
+  "acceptedFalsePositives": [],
+  "acceptedOmissions": ["Hawaiiana"],
+  "metrics": {"precision": 1.0, "recall": 0.889}
+}

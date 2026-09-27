@@ -49,12 +49,12 @@ Este plan desarrolla el [ADR-0001](ADR-0001-pipeline-local-docker-first.md) y la
 
 **Objetivo:** demostrar en CPU la extracción de candidatos a platos de unas pocas imágenes.
 
-- [ ] Seleccionar una muestra pequeña de `google_images.zip`, conservando CID y nombre de imagen.
-- [ ] Aplicar preparación de imagen y OCR con Tesseract; convertir el texto legible de cartas en candidatos a platos. Registrar `sin_texto_legible` o `no_concluyente` cuando corresponda, sin inventar platos de fotografías sin texto.
-- [ ] Generar JSON o CSV por imagen con candidatos, texto fuente y estado.
-- [ ] Documentar técnica, evaluación frente a una transcripción manual pequeña, errores esperados y una posible mejora de producción para fotos de comida sin texto.
+- [x] Seleccionar una muestra pequeña de `google_images.zip`, conservando CID y nombre de imagen.
+- [x] Aplicar preparación de imagen y OCR con Tesseract; convertir el texto legible de cartas en candidatos a platos. Registrar `sin_texto_legible` o `no_concluyente` cuando corresponda, sin inventar platos de fotografías sin texto.
+- [x] Generar JSON o CSV por imagen con candidatos, texto fuente y estado.
+- [x] Documentar técnica, evaluación frente a una transcripción manual pequeña, errores esperados y una posible mejora de producción para fotos de comida sin texto.
 
-- [ ] **Validación de cierre:** `make images` procesa la muestra en un portátil sin GPU, produce el archivo de salida y permite revisar visualmente aciertos y errores.
+- [x] **Validación de cierre:** `make images` procesó cuatro imágenes en CPU, produjo `output/image-candidates.json` con dos resultados con candidatos aceptados y dos `inconclusive`; separa líneas OCR, revisión y candidatos aceptados. La evaluación visual, la prueba OCR real, los límites y las rutas de evolución están documentados en `docs/IMAGE_POC.md` y en comentarios de código.
 
 ## Bloque 5 — Tarea 5: dashboard
 
