@@ -4,3 +4,4 @@ ijson==3.4.0.post0
 rapidfuzz==3.14.3
 openpyxl==3.1.5
 Pillow==11.3.0
+streamlit==1.64.0
