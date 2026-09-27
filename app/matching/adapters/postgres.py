@@ -44,6 +44,10 @@ def save_decisions(venues: Iterable[Venue], decisions: Iterable[Decision]) -> No
     with connect() as connection:
         with connection.cursor() as cursor:
             cursor.execute(SCHEMA)
+            # El estado materializado representa el ultimo pack. Los resultados de
+            # packs anteriores permanecen disponibles como artefactos inmutables de
+            # sus ejecuciones y no deben contaminar la siguiente clasificacion.
+            cursor.execute("DELETE FROM restaurant_matches")
             cursor.executemany(
                 """INSERT INTO just_eat_venues (just_eat_id, name, address, postal_code, latitude, longitude)
                    VALUES (%s, %s, %s, %s, %s, %s)

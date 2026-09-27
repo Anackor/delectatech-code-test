@@ -9,24 +9,40 @@ from app.images.adapters.archive import SAMPLE_IMAGES, image_reader
 from app.images.adapters.json_output import write_results
 from app.images.adapters.tesseract import read_text
 from app.images.application.process_images import process_images
+from app.executions.application.runs import fail_execution, finish_execution, output_path, start_execution
+
+
+def run(images: Path) -> dict:
+    execution = start_execution("images", {"images": images}, {})
+    output = output_path(execution, "image-candidates.json")
+    try:
+        started_at = time.monotonic()
+        results = process_images(SAMPLE_IMAGES, image_reader(images), read_text)
+        write_results(output, results)
+        summary = {status: sum(item.status == status for item in results)
+                   for status in ("candidates", "no_text_readable", "inconclusive", "error")}
+        metrics = {"processed": len(results), "new": 0 if execution.repeated_input else len(results),
+                   "unchanged": len(results) if execution.repeated_input else 0, **summary}
+        finish_execution(execution, output, metrics)
+        return {"status": "ok", "executionId": execution.identifier, "images": len(results),
+                "summary": summary, "durationMs": round((time.monotonic() - started_at) * 1_000),
+                "output": str(output)}
+    except Exception as exc:
+        fail_execution(execution, exc)
+        raise
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Extraer candidatos a platos mediante OCR.")
     parser.add_argument("--images", type=Path, default=Path("source/google_images.zip"))
-    parser.add_argument("--output", type=Path, default=Path("output/image-candidates.json"))
     args = parser.parse_args()
     try:
-        started_at = time.monotonic()
-        results = process_images(SAMPLE_IMAGES, image_reader(args.images), read_text)
-        write_results(args.output, results)
-        summary = {status: sum(item.status == status for item in results)
-                   for status in ("candidates", "no_text_readable", "inconclusive", "error")}
-        print(json.dumps({"status": "ok", "images": len(results), "summary": summary,
-                          "durationMs": round((time.monotonic() - started_at) * 1_000),
-                          "output": str(args.output)}, ensure_ascii=False))
+        print(json.dumps(run(args.images), ensure_ascii=False))
         return 0
     except (OSError, ValueError) as exc:
+        print(json.dumps({"status": "error", "message": str(exc)}, ensure_ascii=False))
+        return 1
+    except Exception as exc:
         print(json.dumps({"status": "error", "message": str(exc)}, ensure_ascii=False))
         return 1
 
