@@ -67,7 +67,7 @@ docker compose exec -T app python -m app.db
 | Extraer el menú de un restaurante Just Eat | `make crawl URL=...` | Disponible |
 | Enlazar restaurantes Just Eat y Google | `make match` | Disponible |
 | Clasificar platos | `make classify` | Disponible |
-| Extraer candidatos desde imágenes | `make images` | Bloque 4 pendiente |
+| Extraer candidatos desde imágenes | `make images` | Disponible |
 | Consultar métricas en dashboard | `make dashboard` | Bloque 5 pendiente |
 
 ### Crawler de Just Eat
@@ -108,8 +108,18 @@ El comando lee `source/food_categories.xlsx` como fuente de verdad, recorre de f
 
 La taxonomía aporta el identificador, nombre, padre, familia y marca de categoría genérica de cada resultado. Las reglas se ejecutan por orden: nombre del plato, sección, cocina declarada por el restaurante junto con una señal específica del plato, descripción y categoría genérica del padre de la taxonomía. Las coincidencias usan alias con límites de palabra para evitar que un ingrediente o una subcadena cambien indebidamente la categoría. Los casos restantes quedan marcados para revisión.
 
+### POC de imágenes
+
+La POC requiere `source/google_images.zip`. Con los servicios iniciados, ejecute:
+
+```sh
+make images
+```
+
+El comando procesa cuatro imágenes fijas en CPU y escribe `output/image-candidates.json`. Cada registro conserva CID, ruta de imagen, líneas OCR, candidatos aceptados, candidatos pendientes de revisión, evidencia, coordenadas, confianza y estado. Los estados `no_text_readable`, `inconclusive` y `error` evitan convertir una imagen sin evidencia suficiente en un plato. El detalle de la muestra, los límites y la evaluación manual están en [docs/IMAGE_POC.md](docs/IMAGE_POC.md).
+
 ## Arquitectura y estado
 
 Cada ejercicio separa reglas, casos de uso y adaptadores. El crawler organiza el caso de uso y sus puertos en `app/crawler/application/`; los adaptadores de Playwright, Just Eat y JSON están en `app/crawler/adapters/`. La clasificación sigue la misma estructura en `app/classification/`: XLSX y JSON son entradas, las reglas son puras y PostgreSQL/JSON son salidas. Las pruebas se dividen entre `tests/unit/`, `tests/integration/` y fuentes reutilizables en `tests/sources/`.
 
-La [decisión de arquitectura](docs/ADR-0001-pipeline-local-docker-first.md) y la [constitución](CONSTITUTION.md) documentan el alcance y las restricciones del ejercicio.
+La [decisión de arquitectura](docs/ADR-0001-pipeline-local-docker-first.md), la [constitución](CONSTITUTION.md) y el [registro de uso de IA](docs/AI_USAGE.md) documentan el alcance, las restricciones y las herramientas utilizadas en el ejercicio.
