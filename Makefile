@@ -29,7 +29,7 @@ classify:
 	docker compose exec -T app python -m app.classification.entrypoint
 
 images:
-	$(error La POC de imagenes se implementara en el bloque 4)
+	docker compose exec -T app python -m app.images.entrypoint
 
 pipeline:
 	$(error El pipeline se implementara en los bloques 2 y 3)
