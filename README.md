@@ -51,7 +51,7 @@ docker compose up --build -d
 docker compose exec -T app python -m app.db
 ```
 
-`app` y `db` son los únicos servicios. PostgreSQL no expone puertos al host; `app` se conecta a `db:5432`. Los datos de `source/` se montan como entrada de solo lectura y los resultados se escriben en `output/`. El volumen de PostgreSQL persiste tras detener los servicios.
+`app` y `db` son los únicos servicios. PostgreSQL no expone puertos al host; `app` se conecta a `db:5432` y publica Streamlit en `http://localhost:8501`. Los datos de `source/` se montan como entrada de solo lectura y los resultados se escriben en `output/`. El volumen de PostgreSQL persiste tras detener los servicios.
 
 ## Operación local
 
@@ -72,7 +72,7 @@ docker compose exec -T app python -m app.db
 | Enlazar restaurantes Just Eat y Google | `make match` | Disponible |
 | Clasificar platos | `make classify` | Disponible |
 | Extraer candidatos desde imágenes | `make images` | Disponible |
-| Consultar métricas en dashboard | `make dashboard` | Bloque 5 pendiente |
+| Abrir los procesos del dashboard | `make dashboard` | Disponible |
 
 ### Crawler de Just Eat
 
@@ -82,15 +82,7 @@ Con el entorno iniciado, ejecute una captura válida:
 make crawl URL=https://www.just-eat.es/restaurants-tiflis-restaurant-barcelona/menu
 ```
 
-El crawler abre la página con Chromium, interpreta su estado estructurado y genera `output/restaurants-tiflis-restaurant-barcelona.json`. La salida estándar informa de la versión del menú, los recuentos y la duración.
-
-Para elegir el nombre del archivo de salida:
-
-```sh
-docker compose exec -T app python -m app.crawler.entrypoint \
-  https://www.just-eat.es/restaurants-tiflis-restaurant-barcelona/menu \
-  --output output/tiflis.json
-```
+El crawler abre la página con Chromium, interpreta su estado estructurado y genera un JSON inmutable en `output/runs/<execution_id>/venue.json`. La salida estándar informa de la ejecución, la versión del menú, los recuentos y la duración.
 
 Para probar un error de entrada controlado:
 
@@ -108,7 +100,7 @@ Ejecute primero `make match` para guardar los restaurantes aceptados y, a contin
 make classify
 ```
 
-El comando lee `source/food_categories.xlsx` como fuente de verdad, recorre de forma incremental los menús de los restaurantes enlazados y crea `output/classified-dishes.json`. Cada aparición conserva los IDs de restaurante, menú, sección y plato; incluye la categoría del XLSX con su jerarquía, o el estado `review` cuando no existe evidencia suficiente.
+El comando lee `source/food_categories.xlsx` como fuente de verdad, recorre de forma incremental los menús de los restaurantes enlazados y crea un artefacto inmutable en `output/runs/<execution_id>/classified-dishes.json`. Cada aparición conserva los IDs de restaurante, menú, sección y plato; incluye la categoría del XLSX con su jerarquía, o el estado `review` cuando no existe evidencia suficiente.
 
 La taxonomía aporta el identificador, nombre, padre, familia y marca de categoría genérica de cada resultado. Las reglas se ejecutan por orden: nombre del plato, sección, cocina declarada por el restaurante junto con una señal específica del plato, descripción y categoría genérica del padre de la taxonomía. Las coincidencias usan alias con límites de palabra para evitar que un ingrediente o una subcadena cambien indebidamente la categoría. Los casos restantes quedan marcados para revisión.
 
@@ -120,7 +112,13 @@ La POC requiere `source/google_images.zip`. Con los servicios iniciados, ejecute
 make images
 ```
 
-El comando procesa cuatro imágenes fijas en CPU y escribe `output/image-candidates.json`. Cada registro conserva CID, ruta de imagen, líneas OCR, candidatos aceptados, candidatos pendientes de revisión, evidencia, coordenadas, confianza y estado. Los estados `no_text_readable`, `inconclusive` y `error` evitan convertir una imagen sin evidencia suficiente en un plato. El detalle de la muestra, los límites y la evaluación manual están en [docs/IMAGE_POC.md](docs/IMAGE_POC.md).
+El comando procesa cuatro imágenes fijas en CPU y escribe un artefacto inmutable en `output/runs/<execution_id>/image-candidates.json`. Cada registro conserva CID, ruta de imagen, líneas OCR, candidatos aceptados, candidatos pendientes de revisión, evidencia, coordenadas, confianza y estado. Los estados `no_text_readable`, `inconclusive` y `error` evitan convertir una imagen sin evidencia suficiente en un plato. El detalle de la muestra, los límites y la evaluación manual están en [docs/IMAGE_POC.md](docs/IMAGE_POC.md).
+
+### Dashboard de procesos
+
+`make dashboard` inicia Streamlit en [http://localhost:8501](http://localhost:8501). La página inicial abre el crawler y la barra lateral permite acceder a matching, clasificación e imágenes. Cada proceso crea una ejecución con sus parámetros, huella de entradas, métricas y un artefacto JSON inmutable en `output/runs/<execution_id>/`.
+
+En una instalación limpia el historial está vacío. Una entrada idéntica genera otra ejecución y conserva su artefacto; sus métricas registran los elementos como `unchanged` en lugar de nuevos.
 
 ## Arquitectura y estado
 
