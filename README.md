@@ -1,127 +1,62 @@
 # Food Delivery Data Integration & Analysis
 
-Implementación docker-first del reto de integración y análisis de datos de restauración. El proyecto se desarrolla por bloques según el [roadmap](docs/ROADMAP.md): el bloque 0 prepara el entorno y el bloque 1 implementa el crawler de Just Eat.
+Pipeline local para extraer menús de Just Eat, enlazar restaurantes con Google, clasificar platos, procesar imágenes de cartas y consultar los resultados en un dashboard.
 
-## Licencia
+## Requisitos y puesta en marcha
 
-El contenido del repositorio es propiedad de Anackor y se distribuye bajo una [licencia propietaria](LICENSE). No se concede ningún derecho de uso a empresas u otras entidades sin autorización escrita previa.
-
-## Instalación local
-
-Solo se necesita Docker con Docker Compose. GNU Make es opcional: todos los comandos tienen alternativa con Docker Compose. Python, PostgreSQL, Chromium y las dependencias del proyecto se instalan dentro del contenedor `app`.
+- Docker con Docker Compose.
+- GNU Make.
+- La carpeta `source/` entregada con la prueba, copiada en la raíz del repositorio.
 
 ```sh
 git clone https://github.com/Anackor/delectatech-code-test.git
 cd delectatech-code-test
-```
-
-### Datos de entrada
-
-Los datos entregados no forman parte del repositorio. Copie la carpeta `source/` recibida con la prueba a la raíz del proyecto antes de ejecutar cualquier caso de uso:
-
-```text
-delectatech-code-test/
-├── source/
-│   ├── food_categories.xlsx
-│   ├── google_venues.json
-│   ├── just_eat_venues.json
-│   └── ...
-├── app/
-└── compose.yaml
-```
-
-Los bloques de matching y clasificación requieren `google_venues.json`, `just_eat_venues.json` y `food_categories.xlsx`. El crawler usa `just_eat_venue_example.json` como referencia; las imágenes se utilizan en el bloque 4.
-
-Las credenciales locales predeterminadas están en [`.env.example`](.env.example). Para personalizarlas, copie el archivo antes del primer arranque:
-
-```powershell
-Copy-Item .env.example .env
-```
-
-Desde la raíz del repositorio, inicie el entorno:
-
-```sh
 make up
+make test
 ```
 
-Sin Make:
+El entorno levanta dos servicios: `app` (Python 3.12, Chromium, Tesseract y Streamlit) y `db` (PostgreSQL). No es necesario instalar Python ni PostgreSQL en el host.
 
-```sh
-docker compose up --build -d
-docker compose exec -T app python -m app.db
-```
+## Ejecución del pipeline
 
-`app` y `db` son los únicos servicios. PostgreSQL no expone puertos al host; `app` se conecta a `db:5432` y publica Streamlit en `http://localhost:8501`. Los datos de `source/` se montan como entrada de solo lectura y los resultados se escriben en `output/`. El volumen de PostgreSQL persiste tras detener los servicios.
-
-## Operación local
-
-| Acción | Con Make | Sin Make |
+| Tarea | Comando | Resultado |
 | --- | --- | --- |
-| Arrancar y comprobar PostgreSQL | `make up` | `docker compose up --build -d` y `docker compose exec -T app python -m app.db` |
-| Comprobar PostgreSQL | `make check` | `docker compose exec -T app python -m app.db` |
-| Ejecutar pruebas | `make test` | `docker compose exec -T app python -m unittest discover -s tests -t . -v` |
-| Detener servicios | `make down` | `docker compose down` |
+| Crawler de Just Eat | `make crawl URL=https://www.just-eat.es/restaurants-.../menu` | Restaurante y menú en JSON |
+| Matching | `make match PACK_SIZE=50 SEED=42` | Enlace entre locales de Just Eat y Google |
+| Clasificación | `make classify` | Platos clasificados con `food_categories.xlsx` |
+| POC de imágenes | `make images` | Candidatos extraídos de `google_images.zip` |
+| Matching y clasificación | `make pipeline PACK_SIZE=50 SEED=42` | Ejecución consecutiva de las tareas 2 y 3 |
 
-`make test` ejecuta pruebas unitarias de reglas y casos de uso, además de integraciones de JSON y PostgreSQL.
+`make classify` requiere una ejecución previa de matching. Cada ejecución queda registrada en PostgreSQL y genera un artefacto JSON inmutable en `output/runs/<execution_id>/`.
 
-## Reproducir los casos de uso
+No se incluye una muestra final versionada: los resultados se reproducen localmente con los comandos anteriores y quedan disponibles en `output/`.
 
-| Caso de uso | Comando | Estado |
-| --- | --- | --- |
-| Extraer el menú de un restaurante Just Eat | `make crawl URL=...` | Disponible |
-| Enlazar restaurantes Just Eat y Google | `make match` | Disponible |
-| Clasificar platos | `make classify` | Disponible |
-| Extraer candidatos desde imágenes | `make images` | Disponible |
-| Abrir los procesos del dashboard | `make dashboard` | Disponible |
-
-### Crawler de Just Eat
-
-Con el entorno iniciado, ejecute una captura válida:
+## Dashboard
 
 ```sh
-make crawl URL=https://www.just-eat.es/restaurants-tiflis-restaurant-barcelona/menu
+make dashboard
 ```
 
-El crawler abre la página con Chromium, interpreta su estado estructurado y genera un JSON inmutable en `output/runs/<execution_id>/venue.json`. La salida estándar informa de la ejecución, la versión del menú, los recuentos y la duración.
+Abrir [http://localhost:8501](http://localhost:8501). El dashboard permite ejecutar y revisar por separado crawler, matching, clasificación e imágenes, junto con su historial, métricas y resultados.
 
-Para probar un error de entrada controlado:
+![Ejecución del crawler](docs/screenshots/dashboard-crawler.png)
+
+![Historial de procesamiento de imágenes](docs/screenshots/dashboard-images.png)
+
+## Enfoque técnico
+
+El proyecto es docker-first y organiza cada tarea por dominio, aplicación y adaptadores. PostgreSQL conserva el estado y el historial; los archivos originales se leen desde `source/` sin modificarlos.
+
+El matching reduce candidatos por proximidad geográfica o código postal. Después aplica reglas ordenadas: teléfono exacto, URL de reparto exacta y una media de similitud de nombre, dirección y distancia cuando esos datos existen. El resultado puede ser `matched`, `ambiguous` o `unmatched` y conserva las puntuaciones utilizadas.
+
+La clasificación usa la taxonomía de `food_categories.xlsx`. Evalúa nombre, sección, cocina, descripción y categorías genéricas mediante reglas reproducibles. Cada plato recibe una categoría con `name`, `parent` y `family`, o queda en estado `review` si no hay evidencia suficiente.
+
+La POC de imágenes ejecuta OCR con Tesseract sobre una muestra pequeña y conserva texto, candidatos, confianza y coordenadas. El enfoque, la evaluación y sus límites están descritos en [docs/IMAGE_POC.md](docs/IMAGE_POC.md).
+
+El uso de herramientas de IA está documentado en [docs/AI_USAGE.md](docs/AI_USAGE.md).
+
+Para detener el entorno:
 
 ```sh
-make crawl URL=https://www.just-eat.es/restaurants-tiflis-restaurant-barcelona/menu?invalid=1
+make down
 ```
-
-La URL debe ser una página pública de menú de `www.just-eat.es`, sin parámetros. Un bloqueo, catálogo incompleto o cambio de formato produce un JSON de error en `stderr`, devuelve un código distinto de cero y no reemplaza una salida previa. El crawler requiere acceso de red a Just Eat; los bloques analíticos posteriores trabajan sobre los ficheros entregados y no dependen de esa conexión.
-
-### Clasificación de platos
-
-Ejecute primero `make match` para guardar los restaurantes aceptados y, a continuación:
-
-```sh
-make classify
-```
-
-El comando lee `source/food_categories.xlsx` como fuente de verdad, recorre de forma incremental los menús de los restaurantes enlazados y crea un artefacto inmutable en `output/runs/<execution_id>/classified-dishes.json`. Cada aparición conserva los IDs de restaurante, menú, sección y plato; incluye la categoría del XLSX con su jerarquía, o el estado `review` cuando no existe evidencia suficiente.
-
-La taxonomía aporta el identificador, nombre, padre, familia y marca de categoría genérica de cada resultado. Las reglas se ejecutan por orden: nombre del plato, sección, cocina declarada por el restaurante junto con una señal específica del plato, descripción y categoría genérica del padre de la taxonomía. Las coincidencias usan alias con límites de palabra para evitar que un ingrediente o una subcadena cambien indebidamente la categoría. Los casos restantes quedan marcados para revisión.
-
-### POC de imágenes
-
-La POC requiere `source/google_images.zip`. Con los servicios iniciados, ejecute:
-
-```sh
-make images
-```
-
-El comando procesa cuatro imágenes fijas en CPU y escribe un artefacto inmutable en `output/runs/<execution_id>/image-candidates.json`. Cada registro conserva CID, ruta de imagen, líneas OCR, candidatos aceptados, candidatos pendientes de revisión, evidencia, coordenadas, confianza y estado. Los estados `no_text_readable`, `inconclusive` y `error` evitan convertir una imagen sin evidencia suficiente en un plato. El detalle de la muestra, los límites y la evaluación manual están en [docs/IMAGE_POC.md](docs/IMAGE_POC.md).
-
-### Dashboard de procesos
-
-`make dashboard` inicia Streamlit en [http://localhost:8501](http://localhost:8501). La página inicial abre el crawler y la barra lateral permite acceder a matching, clasificación e imágenes. Cada proceso crea una ejecución con sus parámetros, huella de entradas, métricas y un artefacto JSON inmutable en `output/runs/<execution_id>/`.
-
-En una instalación limpia el historial está vacío. Una entrada idéntica genera otra ejecución y conserva su artefacto; sus métricas registran los elementos como `unchanged` en lugar de nuevos.
-
-## Arquitectura y estado
-
-Cada ejercicio separa reglas, casos de uso y adaptadores. El crawler organiza el caso de uso y sus puertos en `app/crawler/application/`; los adaptadores de Playwright, Just Eat y JSON están en `app/crawler/adapters/`. La clasificación sigue la misma estructura en `app/classification/`: XLSX y JSON son entradas, las reglas son puras y PostgreSQL/JSON son salidas. Las pruebas se dividen entre `tests/unit/`, `tests/integration/` y fuentes reutilizables en `tests/sources/`.
-
-La [decisión de arquitectura](docs/ADR-0001-pipeline-local-docker-first.md), la [constitución](CONSTITUTION.md) y el [registro de uso de IA](docs/AI_USAGE.md) documentan el alcance, las restricciones y las herramientas utilizadas en el ejercicio.
