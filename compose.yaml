@@ -3,8 +3,11 @@ services:
     build: .
     init: true
     shm_size: 1gb
-    command: ["sleep", "infinity"]
+    command: ["streamlit", "run", "app/dashboard/entrypoint.py", "--server.address=0.0.0.0", "--server.port=8501"]
+    ports:
+      - "8501:8501"
     environment:
+      PYTHONPATH: /workspace
       DB_HOST: db
       DB_PORT: "5432"
       DB_NAME: ${POSTGRES_DB:-food_delivery}

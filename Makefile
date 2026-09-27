@@ -32,7 +32,8 @@ images:
 	docker compose exec -T app python -m app.images.entrypoint
 
 pipeline:
-	$(error El pipeline se implementara en los bloques 2 y 3)
+	docker compose exec -T -e MATCH_PACK_SIZE -e MATCH_SEED app python -m app.matching.entrypoint
+	docker compose exec -T app python -m app.classification.entrypoint
 
 dashboard:
-	$(error El dashboard se implementara en el bloque 5)
+	docker compose up --build -d app
