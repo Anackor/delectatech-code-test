@@ -68,6 +68,7 @@ Este plan desarrolla el [ADR-0001](ADR-0001-pipeline-local-docker-first.md) y la
 
 ## Cierre de entrega
 
+- [x] Añadir una licencia propietaria que reserve todos los derechos y requiera autorización escrita previa para cualquier uso empresarial.
 - [ ] Completar `README.md` con arquitectura, decisiones de matching y clasificación, requisitos, comandos Docker/Make, ejecución completa, dashboard y capturas.
 - [ ] Entregar una muestra final de datos unidos y categorizados, la salida de la POC de imágenes y el informe de herramientas de IA utilizadas.
 - [ ] Ejecutar desde cero el recorrido documentado: levantar servicios, pruebas, pipeline, POC y dashboard. Comprobar que los artefactos se reproducen sin depender de una ejecución anterior.

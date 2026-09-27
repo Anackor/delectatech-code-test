@@ -2,6 +2,10 @@
 
 Implementación docker-first del reto de integración y análisis de datos de restauración. El proyecto se desarrolla por bloques según el [roadmap](docs/ROADMAP.md): el bloque 0 prepara el entorno y el bloque 1 implementa el crawler de Just Eat.
 
+## Licencia
+
+El contenido del repositorio es propiedad de Anackor y se distribuye bajo una [licencia propietaria](LICENSE). No se concede ningún derecho de uso a empresas u otras entidades sin autorización escrita previa.
+
 ## Instalación local
 
 Solo se necesita Docker con Docker Compose. GNU Make es opcional: todos los comandos tienen alternativa con Docker Compose. Python, PostgreSQL, Chromium y las dependencias del proyecto se instalan dentro del contenedor `app`.
