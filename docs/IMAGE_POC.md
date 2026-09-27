@@ -11,7 +11,7 @@
 | `9944003937257840785` | `3cbb7ebc3d0c8378482b5a96a94e5278.jpg` | oferta manuscrita | 1 candidato aceptado |
 | `13704801545575264378` | `594bd6c734095e01b002c63e7e48614b.jpg` | fotografia exterior sin texto de carta util | `inconclusive` |
 
-La salida completa se escribe en `output/image-candidates.json`. [La muestra versionada](../examples/image-candidates.sample.json) permite revisar su contrato sin distribuir los datos de entrada. La referencia y las metricas de evaluacion estan en [image-evaluation.json](../examples/image-evaluation.json).
+La salida completa se escribe en `output/runs/<execution_id>/image-candidates.json`. [La muestra versionada](../examples/image-candidates.sample.json) permite revisar su contrato sin distribuir los datos de entrada. La referencia y las metricas de evaluacion estan en [image-evaluation.json](../examples/image-evaluation.json).
 
 ## Implementacion
 

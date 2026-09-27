@@ -54,13 +54,16 @@ Este plan desarrolla el [ADR-0001](ADR-0001-pipeline-local-docker-first.md) y la
 - [x] Generar JSON o CSV por imagen con candidatos, texto fuente y estado.
 - [x] Documentar técnica, evaluación frente a una transcripción manual pequeña, errores esperados y una posible mejora de producción para fotos de comida sin texto.
 
-- [x] **Validación de cierre:** `make images` procesó cuatro imágenes en CPU, produjo `output/image-candidates.json` con dos resultados con candidatos aceptados y dos `inconclusive`; separa líneas OCR, revisión y candidatos aceptados. La evaluación visual, la prueba OCR real, los límites y las rutas de evolución están documentados en `docs/IMAGE_POC.md` y en comentarios de código.
+- [x] **Validación de cierre:** `make images` procesó cuatro imágenes en CPU, produjo `output/runs/<execution_id>/image-candidates.json` con dos resultados con candidatos aceptados y dos `inconclusive`; separa líneas OCR, revisión y candidatos aceptados. La evaluación visual, la prueba OCR real, los límites y las rutas de evolución están documentados en `docs/IMAGE_POC.md` y en comentarios de código.
 
 ## Bloque 5 — Tarea 5: dashboard
 
 **Objetivo:** explorar los resultados guardados en PostgreSQL.
 
-- [ ] Crear el dashboard interactivo con Streamlit en `app`, sin introducir FastAPI mientras no exista un consumidor de API independiente.
+- [ ] Registrar de forma genérica cada ejecución de caso de uso, sus entradas versionadas, parámetros, estado, métricas y error; conservar los resultados por ejecución para distinguir procesados, nuevos, actualizados, sin cambios y rechazados.
+- [ ] Guardar cada exportación como un artefacto inmutable ligado a su ejecución y conservar en PostgreSQL su ruta, tipo, huella y metadatos.
+- [ ] Crear el dashboard interactivo con Streamlit en `app`, sin introducir FastAPI mientras no exista un consumidor de API independiente. La página raíz abrirá directamente el crawler; no habrá una pestaña de resumen global.
+- [ ] Crear una pantalla de historial y detalle para crawler, matching, clasificación e imágenes; permitir relanzar cada caso de uso desde controles validados que creen una nueva ejecución.
 - [ ] Mostrar, como mínimo, número de restaurantes enlazados y oferta de platos por categoría; añadir filtros y una métrica útil de cobertura o calidad del matching/clasificación.
 - [ ] Tratar el estado sin datos con un mensaje claro y guardar capturas para el README.
 
