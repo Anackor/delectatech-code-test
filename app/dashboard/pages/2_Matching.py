@@ -2,7 +2,7 @@ from pathlib import Path
 
 import streamlit as st
 
-from app.dashboard.ui import show_history
+from app.dashboard.ui import show_history, show_matching_kpis
 from app.matching.entrypoint import run
 
 
@@ -16,4 +16,5 @@ if submitted:
         st.success(run(size, seed, Path("source/just_eat_venues.json"), Path("source/google_venues.json")))
     except Exception as error:
         st.error(str(error))
+show_matching_kpis()
 show_history("matching")
