@@ -8,32 +8,32 @@ export MATCH_SEED = $(value SEED)
 
 up:
 	docker compose up --build -d
-	docker compose exec -T app python -m app.db
+	docker compose exec -T --user appuser app python -m app.db
 
 down:
 	docker compose down
 
 check:
-	docker compose exec -T app python -m app.db
+	docker compose exec -T --user appuser app python -m app.db
 
 test:
-	docker compose exec -T app python -m unittest discover -s tests -t . -v
+	docker compose exec -T --user appuser app python -m unittest discover -s tests -t . -v
 
 crawl:
-	docker compose exec -T -e CRAWL_URL app python -m app.crawler.entrypoint
+	docker compose exec -T --user appuser -e CRAWL_URL app python -m app.crawler.entrypoint
 
 match:
-	docker compose exec -T -e MATCH_PACK_SIZE -e MATCH_SEED app python -m app.matching.entrypoint
+	docker compose exec -T --user appuser -e MATCH_PACK_SIZE -e MATCH_SEED app python -m app.matching.entrypoint
 
 classify:
-	docker compose exec -T app python -m app.classification.entrypoint
+	docker compose exec -T --user appuser app python -m app.classification.entrypoint
 
 images:
-	docker compose exec -T app python -m app.images.entrypoint
+	docker compose exec -T --user appuser app python -m app.images.entrypoint
 
 pipeline:
-	docker compose exec -T -e MATCH_PACK_SIZE -e MATCH_SEED app python -m app.matching.entrypoint
-	docker compose exec -T app python -m app.classification.entrypoint
+	docker compose exec -T --user appuser -e MATCH_PACK_SIZE -e MATCH_SEED app python -m app.matching.entrypoint
+	docker compose exec -T --user appuser app python -m app.classification.entrypoint
 
 dashboard:
 	docker compose up --build -d app
