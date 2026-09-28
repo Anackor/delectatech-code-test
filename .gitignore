@@ -11,7 +11,3 @@ source/
 *.pdf
 .agents/
 skills-lock.json
-
-# Guías locales de trabajo para agentes
-/AGENTS.md
-/docs/agent-guides/
