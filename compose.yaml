@@ -3,6 +3,7 @@ services:
     build: .
     init: true
     shm_size: 1gb
+    entrypoint: ["/usr/local/bin/app-entrypoint"]
     command: ["streamlit", "run", "app/dashboard/entrypoint.py", "--server.address=0.0.0.0", "--server.port=8501", "--server.maxUploadSize=25"]
     ports:
       - "8501:8501"

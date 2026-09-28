@@ -16,7 +16,8 @@ RUN apt-get update \
     && mkdir -p /workspace/output \
     && chown appuser:appuser /workspace/output
 
+COPY docker/entrypoint.sh /usr/local/bin/app-entrypoint
+RUN chmod +x /usr/local/bin/app-entrypoint
+
 COPY app ./app
 COPY tests ./tests
-
-USER appuser
