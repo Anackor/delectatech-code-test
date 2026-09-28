@@ -29,7 +29,7 @@ El entorno levanta dos servicios: `app` (Python 3.12, Chromium, Tesseract y Stre
 
 `make classify` requiere una ejecución previa de matching. Cada ejecución queda registrada en PostgreSQL y genera un artefacto JSON inmutable en `output/runs/<execution_id>/`.
 
-No se incluye una muestra final versionada: los resultados se reproducen localmente con los comandos anteriores y quedan disponibles en `output/`.
+Los resultados no se versionan en Git: se reproducen con los comandos anteriores, quedan disponibles en `output/` y se entregan también como un archivo ZIP generado tras el ciclo completo de pruebas.
 
 ## Dashboard
 
@@ -37,11 +37,13 @@ No se incluye una muestra final versionada: los resultados se reproducen localme
 make dashboard
 ```
 
-Abrir [http://localhost:8501](http://localhost:8501). El dashboard permite ejecutar y revisar por separado crawler, matching, clasificación e imágenes, junto con su historial, métricas y resultados.
+Abrir [http://localhost:8501](http://localhost:8501). El dashboard permite ejecutar y revisar por separado crawler, matching, clasificación e imágenes. Matching muestra restaurantes enlazados, cobertura y decisiones ambiguas; clasificación muestra cobertura, revisión y oferta de platos por categoría.
 
-![Ejecución del crawler](docs/screenshots/dashboard-crawler.png)
+`make images` procesa la muestra de `source/google_images.zip`; la pantalla de imágenes acepta directamente uno o varios archivos JPG, PNG o WebP.
 
-![Historial de procesamiento de imágenes](docs/screenshots/dashboard-images.png)
+![Indicadores de matching](docs/screenshots/dashboard-matching.png)
+
+![Oferta de platos por categoría](docs/screenshots/dashboard-classification.png)
 
 ## Enfoque técnico
 
