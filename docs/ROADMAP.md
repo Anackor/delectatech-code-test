@@ -63,17 +63,17 @@ Este plan desarrolla el [ADR-0001](ADR-0001-pipeline-local-docker-first.md) y la
 - [ ] Registrar de forma genérica cada ejecución de caso de uso, sus entradas versionadas, parámetros, estado, métricas y error; conservar los resultados por ejecución para distinguir procesados, nuevos, actualizados, sin cambios y rechazados. Falta calcular `updated` y `rejected` por elemento; actualmente se registran `processed`, `new`, `unchanged` y los estados propios de cada proceso.
 - [x] Guardar cada exportación como un artefacto inmutable ligado a su ejecución y conservar en PostgreSQL su ruta, tipo, huella y metadatos.
 - [x] Crear el dashboard interactivo con Streamlit en `app`, sin introducir FastAPI mientras no exista un consumidor de API independiente. La página raíz abrirá directamente el crawler; no habrá una pestaña de resumen global.
-- [x] Crear una pantalla de historial y detalle para crawler, matching, clasificación e imágenes; permitir relanzar cada caso de uso desde controles validados que creen una nueva ejecución.
-- [ ] Mostrar, como mínimo, número de restaurantes enlazados y oferta de platos por categoría; añadir filtros y una métrica útil de cobertura o calidad del matching/clasificación.
+- [x] Crear una pantalla de historial y detalle para crawler, matching, clasificación e imágenes; permitir relanzar cada caso de uso desde controles validados que creen una nueva ejecución. La pantalla OCR acepta imágenes directas; el comando mantiene `source/google_images.zip` como entrada.
+- [x] Mostrar, como mínimo, número de restaurantes enlazados y oferta de platos por categoría, junto con una métrica útil de cobertura o calidad del matching/clasificación.
 - [x] Tratar el estado sin datos con un mensaje claro y guardar capturas para el README.
 
-- [ ] **Validación de cierre:** `make dashboard` abre una página local que consulta PostgreSQL, los filtros modifican las métricas y las cifras coinciden con las consultas de la base de datos.
+- [ ] **Validación de cierre:** `make dashboard` abre una página local que consulta PostgreSQL y las cifras coinciden con las consultas de la base de datos.
 
 ## Cierre de entrega
 
 - [x] Añadir una licencia propietaria que reserve todos los derechos y requiera autorización escrita previa para cualquier uso empresarial.
 - [x] Completar `README.md` con arquitectura, decisiones de matching y clasificación, requisitos, comandos Docker/Make, ejecución completa, dashboard y capturas.
-- [ ] Entregar una muestra final de datos unidos y categorizados, la salida de la POC de imágenes y el informe de herramientas de IA utilizadas. La salida de imágenes y el informe de IA están versionados; por decisión de entrega, el conjunto final se reproduce en `output/` y no se incluye en Git.
+- [ ] Entregar una muestra final de datos unidos y categorizados, la salida de la POC de imágenes y el informe de herramientas de IA utilizadas. La salida de imágenes y el informe de IA están versionados; el ZIP de `output/` se generará tras el ciclo completo de pruebas.
 - [ ] Ejecutar desde cero el recorrido documentado: levantar servicios, pruebas, pipeline, POC y dashboard. Comprobar que los artefactos se reproducen sin depender de una ejecución anterior.
 
 - [ ] **Validación de cierre:** una persona puede reproducir la entrega siguiendo el README y encontrar los cinco ejercicios, sus resultados y sus límites documentados.

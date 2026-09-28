@@ -4,6 +4,8 @@
 
 `make images` lee directamente `source/google_images.zip`; no extrae el archivo al disco. La muestra fija contiene cuatro imagenes de cuatro CID distintos:
 
+El dashboard ofrece una entrada alternativa para analizar uno o varios archivos JPG, PNG o WebP subidos directamente. Esta via no acepta ZIP y conserva cada subida como una ejecucion independiente.
+
 | CID | Imagen | Motivo de inclusion | Resultado |
 | --- | --- | --- | --- |
 | `12353399953336620223` | `a8c3a678c184ef488d25f9774c20128d.jpg` | carta de sushi, texto pequeno | `inconclusive`; candidatos con ruido en revision |
