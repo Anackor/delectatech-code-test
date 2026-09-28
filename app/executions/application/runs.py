@@ -7,7 +7,7 @@ from app.executions.adapters import postgres
 from app.executions.domain.models import Execution
 
 
-def start_execution(use_case: str, inputs: dict[str, str | Path], parameters: dict) -> Execution:
+def start_execution(use_case: str, inputs: dict[str, str | Path | bytes], parameters: dict) -> Execution:
     manifest = {name: _input_manifest(value) for name, value in inputs.items()}
     fingerprint = _hash(json.dumps(manifest, sort_keys=True).encode())
     identifier = str(uuid4())
@@ -37,9 +37,11 @@ def output_path(execution: Execution, name: str) -> Path:
     return execution.output_directory / name
 
 
-def _input_manifest(value: str | Path) -> dict:
+def _input_manifest(value: str | Path | bytes) -> dict:
     if isinstance(value, Path):
         return {"path": str(value), "sha256": _file_hash(value), "sizeBytes": value.stat().st_size}
+    if isinstance(value, bytes):
+        return {"sha256": _hash(value), "sizeBytes": len(value)}
     return {"value": value, "sha256": _hash(value.encode())}
 
 
